@@ -1,0 +1,5 @@
+color=color='black':size='hd1080':rate='ntsc' [background];
+[0:v] scale=width='1920':height='-1',boxblur=10 [img_background];
+[background][img_background] overlay='(main_w-overlay_w)/2':'(main_h-overlay_h)/2' [full_background];
+[0:v] scale=width='-1':height=500 [cover];
+[full_background][cover] overlay=100:100 [outv]

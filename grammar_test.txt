@@ -1,0 +1,1 @@
+amovie=a.mp3,asplit[out0],showwaves[out1]

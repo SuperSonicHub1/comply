@@ -1,0 +1,30 @@
+# Implementation of the FFmpeg filtergraph syntax
+# https://ffmpeg.org/ffmpeg-filters.html#Filtergraph-syntax-1
+# Steals a bit from Parsimonius' example grammars (https://github.com/erikrose/parsimonious, MIT)
+
+filtergraph      = sws_flags? (filterchain / emptyline) (semicolon filtergraph)?
+sws_flags        = "sws_flags" equals name semicolon
+filterchain      = filter (chain_separator filterchain)?whitespace? 
+chain_separator  = whitespace? ","  whitespace?
+filter           = linklabels? filter_name (equals filter_arguments)? linklabels?
+
+# Filter arguments are very complex
+# This should only be temporary
+filter_arguments = argument (arg_separator filter_arguments)?
+argument         = (key_value / value)
+key_value        = name equals value
+value            = (~r"[^[]=;,]+" / quoted)+
+quoted           = (~'"[^\"]+"' / ~"'[^\']+'")
+arg_separator    = whitespace? ":" whitespace?
+
+linklabels       = (linklabel whitespace?)+
+linklabel        = "[" linklabel_name "]"
+filter_name      = name ("@" name)?
+linklabel_name   = ~r"[\w:+]+"
+name             = ~r"[\w]+"
+
+# Utilities
+semicolon        = whitespace? ";" whitespace?
+equals           = whitespace? "=" whitespace?
+emptyline        = whitespace+
+whitespace       = ~"\s*"
